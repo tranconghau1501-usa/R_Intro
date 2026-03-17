@@ -2,8 +2,8 @@
 # BÀI 10: ĐẠI SỐ TỔ HỢP VÀ XÁC SUẤT CƠ BẢN
 # ==============================================================================
 # Mục tiêu học tập:
-# - Hiểu và tính được giai thừa, hoán vị, tổ hợp
-# - Phân biệt được khi nào dùng hoán vị, khi nào dùng tổ hợp
+# - Hiểu và tính được giai thừa, hoán vị, chỉnh hợp, tổ hợp
+# - Phân biệt được hoán vị, chỉnh hợp và tổ hợp
 # - Áp dụng đại số tổ hợp vào bài toán xác suất thực tế
 # - Sử dụng R để tính toán các bài toán tổ hợp
 # - Giải quyết được các bài toán đếm trong thực tế
@@ -98,24 +98,68 @@ my_factorial(10)  # 3628800
 
 # 10.2.1 Hoán vị là gì?
 #
-# Hoán vị là cách sắp xếp có thứ tự của các phần tử.
+# Hoán vị là cách sắp xếp TẤT CẢ các phần tử theo thứ tự.
 #
 # Đặc điểm:
+# - Sắp xếp TẤT CẢ n phần tử
+# - CÓ QUAN TÂM ĐẾN THỨ TỰ
+#
+# Ký hiệu: P(n)
+#
+# Công thức:
+# P(n) = n!
+
+# 10.2.2 Ví dụ về hoán vị
+#
+# Ví dụ 1: Có bao nhiêu cách sắp xếp 3 người A, B, C vào 3 ghế?
+#
+# Giải thích:
+# - Sắp xếp TẤT CẢ 3 người
+# - ABC, ACB, BAC, BCA, CAB, CBA → 6 cách
+#
+# P(3) = 3! = 6
+#
+# Ví dụ 2: Có bao nhiêu cách sắp xếp 5 quyển sách trên kệ?
+# P(5) = 5! = 120
+
+# 10.2.3 Tính hoán vị trong R
+
+# Hoán vị của n phần tử = n!
+
+# Ví dụ 1: Sắp xếp 3 người
+factorial(3)  # 6
+
+# Ví dụ 2: Sắp xếp 5 quyển sách
+factorial(5)  # 120
+
+# Ví dụ 3: Sắp xếp 7 học sinh
+factorial(7)  # 5040
+
+# ------------------------------------------------------------------------------
+# 10.3 Chỉnh hợp (Arrangement)
+# ------------------------------------------------------------------------------
+
+# 10.3.1 Chỉnh hợp là gì?
+#
+# Chỉnh hợp là cách chọn và sắp xếp MỘT PHẦN các phần tử theo thứ tự.
+#
+# Đặc điểm:
+# - Chọn r phần tử từ n phần tử
 # - CÓ QUAN TÂM ĐẾN THỨ TỰ
 # - Ví dụ: ABC khác CBA
 #
-# Ký hiệu: P(n, r) hoặc A(n, r)
+# Ký hiệu: A(n, r) hoặc P(n, r)
 #
 # Công thức:
-# P(n, r) = n! / (n - r)!
+# A(n, r) = n! / (n - r)!
 #
 # Trong đó:
 # - n: tổng số phần tử
 # - r: số phần tử được chọn
 
-# 10.2.2 Giải thích công thức
+# 10.3.2 Giải thích công thức
 #
-# P(n, r) = n! / (n - r)!
+# A(n, r) = n! / (n - r)!
 #
 # - Vị trí thứ 1: có n lựa chọn
 # - Vị trí thứ 2: có (n-1) lựa chọn
@@ -125,71 +169,72 @@ my_factorial(10)  # 3628800
 #
 # Tổng cộng: n × (n-1) × (n-2) × ... × (n-r+1)
 #
-# Ví dụ: P(5, 3) = 5 × 4 × 3 = 60
+# Ví dụ: A(5, 3) = 5 × 4 × 3 = 60
 
-# 10.2.3 Ví dụ về hoán vị
+# 10.3.3 Ví dụ về chỉnh hợp
 #
-# Ví dụ 1: Có 5 ghế và 3 người. Hỏi có bao nhiêu cách xếp 3 người vào 5 ghế?
+# Ví dụ 1: Có 5 người, chọn 3 người và xếp vào 3 vị trí: 
+# Lớp trưởng, Lớp phó, Thư ký. Hỏi có bao nhiêu cách?
 #
 # Phân tích:
-# - Ghế thứ 1: 3 người
-# - Ghế thứ 2: 2 người (1 người đã ngồi)
-# - Ghế thứ 3: 1 người
-# - Tổng: 3 × 2 × 1 = 6 cách
+# - Chọn 3 người từ 5 người
+# - Có quan tâm thứ tự (vị trí khác nhau)
+# - Dùng CHỈNH HỢP
 #
-# Nhưng có 5 ghế để chọn!
-# - Chọn ghế thứ 1: có 5 cách
-# - Sau khi chọn ghế 1, chọn ghế 2: có 4 cách
-# - Sau khi chọn ghế 1 và 2, chọn ghế 3: có 3 cách
+# A(5, 3) = 5! / (5-3)! = 5! / 2! = 120 / 2 = 60
 #
-# Công thức:
-# P(5, 3) = 5! / (5-3)! = 5! / 2! = 120 / 2 = 60
+# Ví dụ 2: Có bao nhiêu số có 4 chữ số khác nhau được tạo từ 
+# 1, 2, 3, 4, 5, 6?
 #
-# Ví dụ 2: Có bao nhiêu cách xếp 4 quyển sách khác nhau từ 10 quyển?
-# P(10, 4) = 10! / (10-4)! = 10! / 6! = 5040
+# Phân tích:
+# - Chọn 4 chữ số từ 6 chữ số
+# - Có thứ tự (1234 khác 4321)
+# - Dùng CHỈNH HỢP
+#
+# A(6, 4) = 6! / 2! = 360
 
-# 10.2.4 Tính hoán vị trong R
+# 10.3.4 Tính chỉnh hợp trong R
 
-# Viết hàm tính hoán vị
-permutation <- function(n, r) {
+# Viết hàm tính chỉnh hợp
+chinh_hop <- function(n, r) {
   factorial(n) / factorial(n - r)
 }
 
-# Ví dụ 1: Xếp 3 người vào 5 ghế
-permutation(5, 3)  # 60
+# Ví dụ 1: Chọn 3 người từ 5 người để xếp vào 3 vị trí
+chinh_hop(5, 3)  # 60
 
-# Ví dụ 2: Xếp 4 quyển sách từ 10 quyển
-permutation(10, 4)  # 5040
+# Ví dụ 2: Tạo số 4 chữ số từ 6 chữ số
+chinh_hop(6, 4)  # 360
 
-# Ví dụ 3: Xếp 3 chữ số từ 0-9
-permutation(10, 3)  # 720
+# Ví dụ 3: Chọn 2 chữ cái từ 26 chữ cái (có thứ tự)
+chinh_hop(26, 2)  # 650
 
-# 10.2.5 Bài tập thực hành
+# 10.3.5 Bài tập thực hành
 #
 # Bài 1: Một lớp có 30 học sinh. Giáo viên muốn chọn 3 học sinh làm 
 # lớp trưởng, lớp phó, thủ quỹ. Hỏi có bao nhiêu cách chọn?
 
-# Có thứ tự: lớp trưởng khác lớp phó
-permutation(30, 3)  # 24,360 cách
+# Có thứ tự: lớp trưởng ≠ lớp phó ≠ thủ quỹ
+chinh_hop(30, 3)  # 24,360 cách
 
-# Bài 2: Có bao nhiêu số có 4 chữ số khác nhau được tạo từ các chữ số 
-# 1, 2, 3, 4, 5, 6?
+# Bài 2: Có bao nhiêu cách xếp 3 người vào 10 ghế được đánh số từ 1-10?
 
-permutation(6, 4)  # 360 số
+chinh_hop(10, 3)  # 720 cách
 
 # ------------------------------------------------------------------------------
-# 10.3 Tổ hợp (Combination)
+# 10.4 Tổ hợp (Combination)
 # ------------------------------------------------------------------------------
 
-# 10.3.1 Tổ hợp là gì?
+# 10.4.1 Tổ hợp là gì?
 #
 # Tổ hợp là cách chọn các phần tử KHÔNG QUAN TÂM ĐẾN THỨ TỰ.
 #
 # Đặc điểm:
+# - Chọn r phần tử từ n phần tử
 # - KHÔNG QUAN TÂM ĐẾN THỨ TỰ
 # - Ví dụ: {A, B, C} = {C, B, A}
 #
-# Ký hiệu: C(n, r) hoặc "n chọn r"
+# Ký hiệu: C(n, r)
 #
 # Công thức:
 # C(n, r) = n! / (r! × (n - r)!)
@@ -198,35 +243,35 @@ permutation(6, 4)  # 360 số
 # - n: tổng số phần tử
 # - r: số phần tử được chọn
 
-# 10.3.2 Phân biệt Hoán vị và Tổ hợp
+# 10.4.2 Phân biệt Hoán vị, Chỉnh hợp và Tổ hợp
 #
-# | Tiêu chí    | Hoán vị (P)         | Tổ hợp (C)          |
-# |-------------|---------------------|---------------------|
-# | Thứ tự      | CÓ quan tâm         | KHÔNG quan tâm      |
-# | Ví dụ       | ABC ≠ CBA           | {A,B,C} = {C,B,A}   |
-# | Công thức   | n!/(n-r)!           | n!/(r!(n-r)!)       |
-# | Khi nào     | Sắp xếp, xếp hàng   | Chọn, tập hợp       |
+# | Thuật ngữ      | Ký hiệu  | Công thức        | Chọn      | Thứ tự  |
+# |----------------|----------|------------------|-----------|---------|
+# | Hoán vị        | P(n)     | n!               | TẤT CẢ n  | Có      |
+# | Chỉnh hợp      | A(n,r)   | n!/(n-r)!        | r từ n    | Có      |
+# | Tổ hợp         | C(n,r)   | n!/(r!(n-r)!)    | r từ n    | Không   |
 #
 # Mẹo nhớ:
-# - P: Permutation = Position matters (vị trí quan trọng)
-# - C: Combination = Choice only (chỉ chọn thôi)
+# - Hoán vị: Xếp TẤT CẢ (All)
+# - Chỉnh hợp: Chọn MỘT PHẦN + có VỊ TRÍ (Arrangement)
+# - Tổ hợp: Chọn MỘT PHẦN + KHÔNG VỊ TRÍ (Combination)
 
-# 10.3.3 Ví dụ về tổ hợp
+# 10.4.3 Ví dụ về tổ hợp
 #
 # Ví dụ 1: Từ 5 học sinh, chọn 3 học sinh vào đội thi. 
 # Hỏi có bao nhiêu cách chọn?
 #
 # Phân tích:
-# - Không quan tâm thứ tự
-# - Chọn A, B, C = Chọn C, B, A
-# - Dùng tổ hợp
+# - Chọn 3 học sinh từ 5 học sinh
+# - Không quan tâm thứ tự (chọn A, B, C = chọn C, B, A)
+# - Dùng TỔ HỢP
 #
 # C(5, 3) = 5! / (3! × 2!) = 120 / (6 × 2) = 10 cách
 #
 # Ví dụ 2: Trong một bộ bài 52 lá, có bao nhiêu cách rút 5 lá bài?
 # C(52, 5) = 52! / (5! × 47!) = 2,598,960 cách
 
-# 10.3.4 Tính tổ hợp trong R
+# 10.4.4 Tính tổ hợp trong R
 
 # Hàm choose() có sẵn trong R
 
@@ -245,73 +290,91 @@ r <- 0:10
 results <- data.frame(n = n, r = r, combinations = choose(n, r))
 print(results)
 
-# 10.3.5 So sánh Hoán vị và Tổ hợp
+# 10.4.5 So sánh Chỉnh hợp và Tổ hợp
 
 # Ví dụ: Từ 5 phần tử, chọn 3 phần tử
 
-# Hoán vị (có thứ tự)
-permutation(5, 3)  # 60
+# Chỉnh hợp (có thứ tự)
+chinh_hop(5, 3)  # 60
 
 # Tổ hợp (không thứ tự)
-choose(5, 3)       # 10
+choose(5, 3)     # 10
 
-# Mối quan hệ: P(n,r) = C(n,r) × r!
-permutation(5, 3) == choose(5, 3) * factorial(3)  # TRUE
+# Mối quan hệ: A(n,r) = C(n,r) × r!
+chinh_hop(5, 3) == choose(5, 3) * factorial(3)  # TRUE
 # 60 = 10 × 6
 
-# 10.3.6 Bài tập thực hành
+# 10.4.6 Bài tập thực hành
 #
 # Bài 1: Một lớp có 30 học sinh. Chọn 5 học sinh để tham gia hoạt động 
-# ngoại khóa. Hỏi có bao nhiêu cách chọn?
+# ngoại khóa (không phân biệt vai trò). Hỏi có bao nhiêu cách chọn?
 
+# Không có thứ tự → Tổ hợp
 choose(30, 5)  # 142,506 cách
 
 # Bài 2: Trong một đề thi có 10 câu, sinh viên phải chọn 6 câu để làm. 
 # Hỏi có bao nhiêu cách chọn?
 
+# Không quan tâm thứ tự → Tổ hợp
 choose(10, 6)  # 210 cách
 
 # ------------------------------------------------------------------------------
-# 10.4 So sánh và Lựa chọn
+# 10.5 So sánh và Lựa chọn
 # ------------------------------------------------------------------------------
 
-# 10.4.1 Bảng so sánh
+# 10.5.1 Bảng tổng hợp
 #
-# | Tình huống                      | Công thức          | Ví dụ                  |
-# |---------------------------------|--------------------|------------------------|
-# | Sắp xếp tất cả                  | n!                 | Xếp 5 người vào 5 ghế  |
-# | Sắp xếp một phần (có thứ tự)    | P(n,r) = n!/(n-r)! | Xếp 3 người vào 5 ghế  |
-# | Chọn (không thứ tự)             | C(n,r)             | Chọn 3 người từ 5      |
+# | Tình huống                      | Công thức          | Ví dụ                         |
+# |---------------------------------|--------------------|-------------------------------|
+# | Xếp TẤT CẢ n phần tử            | P(n) = n!          | Xếp 5 người vào 5 ghế         |
+# | Chọn r từ n, CÓ VỊ TRÍ          | A(n,r) = n!/(n-r)! | Chọn 3 từ 5 vào 3 vị trí      |
+# | Chọn r từ n, KHÔNG VỊ TRÍ       | C(n,r)             | Chọn 3 từ 5 thành nhóm        |
 
-# 10.4.2 Cách nhận biết
+# 10.5.2 Cách nhận biết
 #
-# Câu hỏi có từ khóa:
-# - "Sắp xếp", "Xếp hàng", "Thứ tự" → Dùng Hoán vị (P)
-# - "Chọn", "Lấy", "Tập hợp" → Dùng Tổ hợp (C)
-
-# 10.4.3 Ví dụ nhận biết
+# Các từ khóa:
 #
-# Ví dụ 1: "Có bao nhiêu cách CHỌN 3 học sinh từ 10 học sinh?"
-# - Từ khóa: "chọn"
-# - Đáp án:
-choose(10, 3)  # 120
+# 1. Hoán vị (P):
+#    - "Sắp xếp TẤT CẢ"
+#    - "Có bao nhiêu cách xếp n phần tử"
+#
+# 2. Chỉnh hợp (A):
+#    - "Chọn... vào các VỊ TRÍ"
+#    - "Lớp trưởng, Lớp phó, Thư ký"
+#    - "Ghế số 1, ghế số 2, ghế số 3"
+#
+# 3. Tổ hợp (C):
+#    - "Chọn NHÓM"
+#    - "Đội thi", "Ban tổ chức"
+#    - "Không phân biệt vai trò"
 
-# Ví dụ 2: "Có bao nhiêu cách XẾP 3 học sinh vào 3 vị trí: 
-# lớp trưởng, lớp phó, thư ký?"
-# - Từ khóa: "xếp", "vị trí"
-# - Đáp án:
-permutation(10, 3)  # 720
-
-# Ví dụ 3: "Có bao nhiêu cách SẮP XẾP 5 quyển sách?"
-# - Từ khóa: "sắp xếp"
-# - Đáp án:
+# 10.5.3 Ví dụ minh họa
+#
+# Bài toán: 5 học sinh: A, B, C, D, E
+#
+# Câu 1: Có bao nhiêu cách SẮP XẾP 5 học sinh thành 1 hàng?
+# → Hoán vị:
 factorial(5)  # 120
 
+# Câu 2: Có bao nhiêu cách chọn 3 học sinh làm 
+# Lớp trưởng, Lớp phó, Thư ký?
+# → Chỉnh hợp: A làm LT ≠ A làm LP
+chinh_hop(5, 3)  # 60
+
+# Câu 3: Có bao nhiêu cách chọn 3 học sinh vào đội thi?
+# → Tổ hợp: Chọn A,B,C = Chọn C,B,A
+choose(5, 3)  # 10
+
+# So sánh kết quả
+cat("Hoán vị P(5) =", factorial(5), "\n")
+cat("Chỉnh hợp A(5,3) =", chinh_hop(5, 3), "\n")
+cat("Tổ hợp C(5,3) =", choose(5, 3), "\n")
+
 # ------------------------------------------------------------------------------
-# 10.5 Ứng dụng trong Xác suất
+# 10.6 Ứng dụng trong Xác suất
 # ------------------------------------------------------------------------------
 
-# 10.5.1 Xác suất là gì?
+# 10.6.1 Xác suất là gì?
 #
 # Xác suất là khả năng xảy ra của một sự kiện.
 #
@@ -323,7 +386,7 @@ factorial(5)  # 120
 # - P(A) = 1: Sự kiện chắc chắn xảy ra
 # - 0 < P(A) < 1: Sự kiện có thể xảy ra
 
-# 10.5.2 Ví dụ về xác suất
+# 10.6.2 Ví dụ về xác suất
 
 # Ví dụ 1: Tung đồng xu
 # Mặt ngửa hoặc mặt sấp
@@ -337,10 +400,9 @@ cat("Xác suất mặt ngửa:", prob_heads, "\n")
 # P(ra số 6) = 1/6
 
 prob_six <- 1/6
-cat("Xác suất ra số 6:", prob_six, "\n")
 cat("Xác suất ra số 6:", round(prob_six, 3), "\n")  # 0.167
 
-# 10.5.3 Ứng dụng tổ hợp trong xác suất
+# 10.6.3 Ứng dụng tổ hợp trong xác suất
 
 # Ví dụ 1: Xác suất rút 4 quân Át từ bộ bài 52 lá
 #
@@ -380,8 +442,7 @@ cat("Tổng số cách chọn 5 lá:", total_ways_5, "\n")
 
 # Xác suất
 prob_2_aces <- ways_2_aces / total_ways_5
-cat("Xác suất có đúng 2 quân Át:", prob_2_aces, "\n")
-cat("Xác suất:", round(prob_2_aces, 4), "\n")  # 0.0399
+cat("Xác suất có đúng 2 quân Át:", round(prob_2_aces, 4), "\n")  # 0.0399
 
 # Ví dụ 3: Xổ số - Chọn 6 số từ 45 số
 
@@ -392,14 +453,10 @@ cat("Tổng số tổ hợp:", total_combinations, "\n")
 # Xác suất trúng jackpot (chọn đúng 6 số)
 prob_jackpot <- 1 / total_combinations
 cat("Xác suất trúng jackpot:", prob_jackpot, "\n")
-cat("Xác suất:", format(prob_jackpot, scientific = FALSE), "\n")
-# 0.00000012...
-
-# Tỷ lệ: 1 trên bao nhiêu?
 cat("Tỷ lệ: 1 trên", total_combinations, "\n")
 # 1 trên 8,145,060
 
-# 10.5.4 Ví dụ thực tế khác
+# 10.6.4 Ví dụ thực tế khác
 
 # Ví dụ 4: Một lớp có 30 sinh viên, trong đó có 12 nữ. 
 # Chọn ngẫu nhiên 5 sinh viên. Tính xác suất có đúng 3 sinh viên nữ.
@@ -421,10 +478,10 @@ prob <- favorable / total
 cat("Xác suất có đúng 3 nữ:", round(prob, 4), "\n")
 
 # ------------------------------------------------------------------------------
-# 10.6 Tam giác Pascal
+# 10.7 Tam giác Pascal
 # ------------------------------------------------------------------------------
 
-# 10.6.1 Tam giác Pascal là gì?
+# 10.7.1 Tam giác Pascal là gì?
 #
 # Tam giác Pascal là một cách sắp xếp các số tổ hợp thành hình tam giác.
 #
@@ -439,7 +496,7 @@ cat("Xác suất có đúng 3 nữ:", round(prob, 4), "\n")
 #    1   3   3   1        (hàng 3)
 #  1   4   6   4   1      (hàng 4)
 
-# 10.6.2 Vẽ tam giác Pascal trong R
+# 10.7.2 Vẽ tam giác Pascal trong R
 
 # Hàm vẽ tam giác Pascal
 pascal_triangle <- function(n) {
@@ -458,7 +515,7 @@ pascal_triangle <- function(n) {
 # Vẽ tam giác Pascal với 6 hàng
 pascal_triangle(6)
 
-# 10.6.3 Tính chất của tam giác Pascal
+# 10.7.3 Tính chất của tam giác Pascal
 
 # Tính chất 1: Tổng các số trong hàng n = 2^n
 n <- 5
@@ -476,7 +533,7 @@ cat("C(10, 7) =", choose(n, n-r), "\n")
 # Cả hai đều = 120
 
 # ------------------------------------------------------------------------------
-# 10.7 Bài tập nâng cao
+# 10.8 Bài tập nâng cao
 # ------------------------------------------------------------------------------
 
 # Bài tập 1: Chọn đội bóng
@@ -505,23 +562,7 @@ case_1f <- choose(8, 1) * choose(12, 5)
 total_ways_2 <- total_all - case_0f - case_1f
 cat("Tổng số cách (cách 2):", total_ways_2, "\n")
 
-# Bài tập 2: Mật khẩu
-#
-# Có bao nhiêu mật khẩu dài 6 ký tự, sử dụng 26 chữ cái 
-# (không phân biệt hoa thường), trong đó:
-# - Không có ký tự nào lặp lại
-# - Phải có ít nhất 2 nguyên âm (a, e, i, o, u)
-
-# Đây là bài toán phức tạp hơn
-# Sinh viên cần phân tích từng bước
-
-# Gợi ý:
-# - Số nguyên âm: 5
-# - Số phụ âm: 21
-# - Không lặp → Hoán vị
-# - Ít nhất 2 nguyên âm → Tính nhiều trường hợp
-
-# Bài tập 3: Chia nhóm
+# Bài tập 2: Chia nhóm
 #
 # Một lớp có 24 học sinh. Giáo viên muốn chia thành 3 nhóm: 
 # Nhóm A (8 người), Nhóm B (8 người), Nhóm C (8 người). 
@@ -540,50 +581,51 @@ cat("Số cách chia:", total, "\n")
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# Bài tập 1: Giai thừa cơ bản
+# Bài tập 1: Phân biệt P, A, C
 # ------------------------------------------------------------------------------
 
-# 1. Tính các giai thừa sau:
-#    - 6!
-#    - 8!
-#    - 12!
-
-# 2. Tính: 10! / 7!
-
-# 3. Tính: (n+2)! / n! với n = 5
-
-# Gợi ý câu 2:
-factorial(10) / factorial(7)
-# Hoặc đơn giản hóa: 10!/7! = 10 × 9 × 8
-
-# ------------------------------------------------------------------------------
-# Bài tập 2: Phân biệt Hoán vị và Tổ hợp
-# ------------------------------------------------------------------------------
-
-# Cho biết các bài toán sau dùng Hoán vị hay Tổ hợp, sau đó tính:
+# Xác định mỗi bài toán sau dùng Hoán vị, Chỉnh hợp hay Tổ hợp, sau đó tính:
 #
-# 1. Có bao nhiêu cách chọn 3 học sinh từ 15 học sinh để tham gia Olympic?
-# 2. Có bao nhiêu cách xếp 3 học sinh vào 3 vị trí: Lớp trưởng, Lớp phó, Bí thư?
-# 3. Có bao nhiêu cách chọn 5 câu hỏi từ 20 câu trong đề thi?
-# 4. Có bao nhiêu cách sắp xếp 7 quyển sách trên kệ?
+# 1. Có bao nhiêu cách sắp xếp 6 quyển sách trên kệ?
+# 2. Có bao nhiêu cách chọn 3 học sinh từ 15 học sinh vào đội thi 
+#    (không phân biệt vai trò)?
+# 3. Có bao nhiêu cách chọn 3 học sinh từ 15 học sinh để làm 
+#    Lớp trưởng, Lớp phó, Thư ký?
+# 4. Có bao nhiêu số có 4 chữ số khác nhau từ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9?
+
+# Đáp án:
+
+# 1. Hoán vị - xếp TẤT CẢ
+factorial(6)  # 720
+
+# 2. Tổ hợp - chọn KHÔNG VỊ TRÍ
+choose(15, 3)  # 455
+
+# 3. Chỉnh hợp - chọn CÓ VỊ TRÍ
+chinh_hop(15, 3)  # 2730
+
+# 4. Chỉnh hợp - chọn và xếp
+chinh_hop(10, 4)  # 5040
 
 # ------------------------------------------------------------------------------
-# Bài tập 3: Bài toán đếm
+# Bài tập 2: Bài toán đếm
 # ------------------------------------------------------------------------------
 
-# 1. Có bao nhiêu số có 4 chữ số khác nhau được tạo từ 1, 2, 3, 4, 5, 6, 7?
-
-# 2. Có bao nhiêu cách chia 12 học sinh thành 3 nhóm, mỗi nhóm 4 người?
-
-# 3. Một đội bóng đá có 15 cầu thủ. Huấn luyện viên cần chọn:
+# 1. Một đội bóng đá có 15 cầu thủ. Huấn luyện viên cần chọn:
 #    - 1 thủ môn từ 2 thủ môn
 #    - 4 hậu vệ từ 6 hậu vệ
 #    - 4 tiền vệ từ 5 tiền vệ
 #    - 2 tiền đạo từ 2 tiền đạo
 #    Hỏi có bao nhiêu cách chọn đội hình?
 
+# Mỗi vị trí dùng Tổ hợp (không phân biệt thứ tự trong vị trí)
+ways <- choose(2, 1) * choose(6, 4) * choose(5, 4) * choose(2, 2)
+cat("Số cách chọn đội hình:", ways, "\n")
+
+# 2. Có bao nhiêu cách chia 12 học sinh thành 3 nhóm, mỗi nhóm 4 người?
+
 # ------------------------------------------------------------------------------
-# Bài tập 4: Xác suất
+# Bài tập 3: Xác suất
 # ------------------------------------------------------------------------------
 
 # 1. Rút ngẫu nhiên 3 lá bài từ bộ bài 52 lá. Tính xác suất:
@@ -604,7 +646,7 @@ factorial(10) / factorial(7)
 #    - Có ít nhất 1 nữ
 
 # ------------------------------------------------------------------------------
-# Bài tập 5: Ứng dụng thực tế
+# Bài tập 4: Ứng dụng thực tế
 # ------------------------------------------------------------------------------
 
 # 1. Xổ số: Trong xổ số Mega, người chơi chọn 6 số từ 1-45. Tính:
@@ -612,28 +654,22 @@ factorial(10) / factorial(7)
 #    - Xác suất trúng jackpot (đúng cả 6 số)
 #    - Xác suất trúng giải 2 (đúng 5 số)
 
-# 2. Mật khẩu: Có bao nhiêu mật khẩu dài 8 ký tự, gồm:
-#    - Chỉ dùng chữ cái (a-z, A-Z)?
-#    - Chỉ dùng chữ số (0-9)?
-#    - Dùng cả chữ và số, không lặp?
-
-# 3. Chia nhóm: Một công ty có 20 nhân viên cần chia thành:
-#    - 2 nhóm, mỗi nhóm 10 người
-#    - 4 nhóm, mỗi nhóm 5 người
-#    - Hỏi cách chia nào có nhiều khả năng hơn?
+# 2. Mật khẩu: Có bao nhiêu mật khẩu dài 6 ký tự, gồm chữ số 0-9, trong đó:
+#    - Các ký tự có thể lặp lại?
+#    - Các ký tự không được lặp lại?
 
 # ==============================================================================
 # CÂU HỎI ÔN TẬP
 # ==============================================================================
 
-# 1. Giải thích sự khác biệt giữa Hoán vị và Tổ hợp?
-# 2. Khi nào dùng công thức n!, P(n,r), C(n,r)?
+# 1. Phân biệt Hoán vị, Chỉnh hợp và Tổ hợp?
+# 2. Khi nào dùng công thức P(n), A(n,r), C(n,r)?
 # 3. Tại sao C(n,r) = C(n, n-r)?
 # 4. Giải thích ý nghĩa của tam giác Pascal?
 # 5. Trong xác suất, tổ hợp được dùng như thế nào?
-# 6. Cho ví dụ thực tế về hoán vị và tổ hợp?
-# 7. Tính P(10, 3) và C(10, 3), giải thích tại sao khác nhau?
-# 8. Nêu mối quan hệ giữa P(n,r) và C(n,r)?
+# 6. Cho ví dụ thực tế về mỗi loại: P, A, C?
+# 7. Tính A(10, 3) và C(10, 3), giải thích tại sao khác nhau?
+# 8. Nêu mối quan hệ giữa A(n,r) và C(n,r)?
 
 # ==============================================================================
 # TÀI LIỆU THAM KHẢO
@@ -654,39 +690,42 @@ factorial(10) / factorial(7)
 #    - Công thức: n! = 1 × 2 × 3 × ... × n
 #    - Quy ước: 0! = 1
 #
-# 2. ✅ Hoán vị P(n,r): Sắp xếp có thứ tự
-#    - Công thức: P(n,r) = n! / (n-r)!
-#    - Có quan tâm thứ tự
+# 2. ✅ Hoán vị P(n): Sắp xếp TẤT CẢ
+#    - Công thức: P(n) = n!
+#    - Xếp TẤT CẢ n phần tử
+#    - Ví dụ: Xếp 5 người vào 5 ghế
+#
+# 3. ✅ Chỉnh hợp A(n,r): Chọn và sắp xếp CÓ THỨ TỰ
+#    - Công thức: A(n,r) = n! / (n-r)!
+#    - Chọn r từ n, CÓ VỊ TRÍ
 #    - ABC ≠ CBA
 #
-# 3. ✅ Tổ hợp C(n,r): Chọn không thứ tự
+# 4. ✅ Tổ hợp C(n,r): Chọn KHÔNG THỨ TỰ
 #    - Công thức: C(n,r) = n! / (r!(n-r)!)
-#    - Không quan tâm thứ tự
+#    - Chọn r từ n, KHÔNG VỊ TRÍ
 #    - {A,B,C} = {C,B,A}
 #
-# 4. ✅ Cách nhận biết:
-#    - "Sắp xếp", "Xếp hàng" → Hoán vị
-#    - "Chọn", "Lấy" → Tổ hợp
+# 5. ✅ Cách nhận biết:
+#    - "Sắp xếp TẤT CẢ" → Hoán vị (P)
+#    - "Chọn vào VỊ TRÍ" → Chỉnh hợp (A)
+#    - "Chọn NHÓM" → Tổ hợp (C)
 #
-# 5. ✅ Trong xác suất:
+# 6. ✅ Trong xác suất:
 #    - P(A) = Số trường hợp thuận lợi / Tổng số trường hợp
 #    - Thường dùng tổ hợp để đếm
-#
-# 6. ✅ Tam giác Pascal:
-#    - Hàng n chứa C(n,0), C(n,1), ..., C(n,n)
-#    - Tổng hàng n = 2^n
 
 # Công thức quan trọng:
 #
 # Giai thừa:     n! = 1 × 2 × 3 × ... × n
-# Hoán vị:       P(n,r) = n! / (n-r)!
+# Hoán vị:       P(n) = n!
+# Chỉnh hợp:     A(n,r) = n! / (n-r)!
 # Tổ hợp:        C(n,r) = n! / (r! × (n-r)!)
-# Mối quan hệ:   P(n,r) = C(n,r) × r!
+# Mối quan hệ:   A(n,r) = C(n,r) × r!
 # Xác suất:      P(A) = |A| / |Ω|
 
 # Lưu ý quan trọng:
-# - LUÔN phân tích kỹ đề bài trước khi chọn công thức
-# - KIỂM TRA xem có quan tâm thứ tự hay không
+# - LUÔN phân tích kỹ đề bài: chọn TẤT CẢ hay MỘT PHẦN?
+# - KIỂM TRA xem có quan tâm VỊ TRÍ hay không?
 # - VẼ SƠ ĐỒ hoặc liệt kê các trường hợp nhỏ để hiểu bài toán
 # - SỬ DỤNG R để tính toán và kiểm tra kết quả
 # - THỰC HÀNH nhiều bài tập để thành thạo
