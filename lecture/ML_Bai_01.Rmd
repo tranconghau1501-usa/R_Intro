@@ -1,0 +1,311 @@
+---
+title: "Bài 1: Giới thiệu tổng quan về Machine Learning"
+author: "Giảng viên: Lê Nhật Tùng"
+date: "Tháng 3, 2026"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, 
+                      fig.width = 10, fig.height = 6, dpi = 150)
+```
+
+## Mục tiêu học tập
+
+- Hiểu khái niệm Machine Learning
+- Phân biệt các loại ML
+- Nắm quy trình 10 bước
+- Hiểu overfitting/underfitting
+
+## 1.1 Machine Learning là gì?
+
+**Machine Learning** là khả năng máy tính học từ dữ liệu.
+
+### So sánh
+
+| | Truyền thống | Machine Learning |
+|---|---|---|
+| Input | Dữ liệu + Quy tắc | Dữ liệu + Kết quả |
+| Output | Kết quả | Mô hình |
+
+## 1.2 Regression Example
+
+```{r regression}
+area <- c(50, 60, 70, 80, 90, 100, 110, 120)
+price <- c(2.5, 3.0, 4.2, 5.5, 6.8, 8.0, 9.5, 11.0)
+
+plot(area, price, pch = 19, col = "blue", cex = 1.5,
+     xlab = "Diện tích (m2)", ylab = "Giá (tỷ)",
+     main = "Regression: Dự đoán giá nhà")
+
+model <- lm(price ~ area)
+abline(model, col = "red", lwd = 2)
+
+new_area <- 75
+new_price <- predict(model, newdata = data.frame(area = new_area))
+points(new_area, new_price, pch = 19, col = "green", cex = 2)
+
+legend("bottomright", 
+       legend = c("Training data", "Regression line", "Prediction"),
+       col = c("blue", "red", "green"),
+       pch = c(19, NA, 19), lty = c(NA, 1, NA))
+```
+
+## 1.3 Classification Example
+
+```{r classification}
+data(iris)
+iris2 <- iris[iris$Species %in% c("setosa", "versicolor"), ]
+iris2$Species <- droplevels(iris2$Species)
+
+plot(iris2$Petal.Length, iris2$Petal.Width,
+     col = c("red", "blue")[iris2$Species], pch = 19,
+     xlab = "Petal Length", ylab = "Petal Width",
+     main = "Classification: Phân loại Iris")
+
+abline(v = 2.5, col = "darkgreen", lwd = 2, lty = 2)
+
+legend("bottomright",
+       legend = c("Setosa", "Versicolor", "Boundary"),
+       col = c("red", "blue", "darkgreen"),
+       pch = c(19, 19, NA), lty = c(NA, NA, 2))
+```
+
+## 1.4 Clustering Example
+
+```{r clustering}
+set.seed(42)
+age <- c(rnorm(30, 25, 3), rnorm(30, 45, 4), rnorm(30, 65, 5))
+income <- c(rnorm(30, 20, 5), rnorm(30, 60, 8), rnorm(30, 35, 6))
+customer <- data.frame(Age = age, Income = income)
+
+km <- kmeans(customer, centers = 3)
+
+plot(customer$Age, customer$Income,
+     col = c("red", "blue", "green")[km$cluster], pch = 19,
+     xlab = "Tuổi", ylab = "Thu nhập (triệu/tháng)",
+     main = "Clustering: Phân nhóm khách hàng")
+
+points(km$centers, pch = 4, cex = 3, lwd = 3, col = "black")
+
+legend("topright",
+       legend = c("Nhóm 1", "Nhóm 2", "Nhóm 3", "Centroids"),
+       col = c("red", "blue", "green", "black"),
+       pch = c(19, 19, 19, 4))
+```
+
+## 1.5 Quy trình ML với Iris
+
+### Load data
+
+```{r load-data}
+data(iris)
+cat("Số dòng:", nrow(iris), "\n")
+cat("Số cột:", ncol(iris), "\n")
+cat("Missing:", sum(is.na(iris)), "\n")
+```
+
+### EDA
+
+```{r eda, fig.height=8}
+par(mfrow = c(2, 2))
+
+hist(iris$Sepal.Length, col = "lightblue", 
+     main = "Sepal Length", xlab = "")
+
+boxplot(Sepal.Length ~ Species, data = iris, 
+        col = c("red", "blue", "green"),
+        main = "Sepal Length by Species")
+
+plot(iris$Petal.Length, iris$Petal.Width, 
+     col = iris$Species, pch = 19,
+     main = "Petal Length vs Width",
+     xlab = "Length", ylab = "Width")
+
+pairs(iris[, 1:4], col = iris$Species, pch = 19)
+
+par(mfrow = c(1, 1))
+```
+
+### Feature Scaling
+
+```{r scaling}
+original <- c(10, 20, 30, 40, 50)
+normalized <- (original - min(original)) / (max(original) - min(original))
+standardized <- (original - mean(original)) / sd(original)
+
+par(mfrow = c(1, 3))
+
+plot(1:5, original, type = "b", pch = 19, 
+     main = "Original", ylab = "Value")
+
+plot(1:5, normalized, type = "b", pch = 19, col = "blue",
+     main = "Normalized [0,1]", ylab = "Value")
+
+plot(1:5, standardized, type = "b", pch = 19, col = "green",
+     main = "Standardized", ylab = "Value")
+
+par(mfrow = c(1, 1))
+```
+
+### Train/Test Split
+
+```{r split}
+set.seed(42)
+idx <- sample(nrow(iris), 0.7 * nrow(iris))
+train <- iris[idx, ]
+test <- iris[-idx, ]
+
+cat("Train:", nrow(train), "\n")
+cat("Test:", nrow(test), "\n")
+```
+
+### Modeling
+
+```{r model}
+library(rpart)
+model <- rpart(Species ~ ., data = train, method = "class")
+
+pred <- predict(model, test, type = "class")
+acc <- mean(pred == test$Species)
+
+cat("Accuracy:", round(acc * 100, 2), "%\n")
+```
+
+### Confusion Matrix
+
+```{r confusion}
+cm <- table(Predicted = pred, Actual = test$Species)
+print(cm)
+```
+
+## 1.6 Overfitting vs Underfitting
+
+```{r overfit-comparison}
+model_under <- rpart(Species ~ ., train, method = "class",
+                     control = rpart.control(maxdepth = 1))
+
+model_good <- rpart(Species ~ ., train, method = "class",
+                    control = rpart.control(maxdepth = 3))
+
+model_over <- rpart(Species ~ ., train, method = "class",
+                    control = rpart.control(maxdepth = 30, cp = 0))
+
+get_acc <- function(m, data) {
+  p <- predict(m, data, type = "class")
+  mean(p == data$Species)
+}
+
+results <- data.frame(
+  Model = c("Underfit", "Good", "Overfit"),
+  Train = c(get_acc(model_under, train),
+            get_acc(model_good, train),
+            get_acc(model_over, train)) * 100,
+  Test = c(get_acc(model_under, test),
+           get_acc(model_good, test),
+           get_acc(model_over, test)) * 100
+)
+
+print(results)
+```
+
+### Visualization
+
+```{r overfit-plot}
+complexity <- 1:10
+train_err <- c(0.35, 0.25, 0.15, 0.08, 0.04, 0.02, 0.01, 0.005, 0.002, 0.001)
+test_err <- c(0.37, 0.27, 0.17, 0.12, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40)
+
+plot(complexity, train_err, type = "l", col = "blue", lwd = 2,
+     ylim = c(0, 0.5), xlab = "Model Complexity", ylab = "Error",
+     main = "Overfitting vs Underfitting")
+
+lines(complexity, test_err, col = "red", lwd = 2, lty = 2)
+
+rect(0.5, 0, 3.5, 0.5, col = rgb(1,0,0,0.1), border = NA)
+rect(3.5, 0, 6.5, 0.5, col = rgb(0,1,0,0.1), border = NA)
+rect(6.5, 0, 10.5, 0.5, col = rgb(1,1,0,0.1), border = NA)
+
+text(2, 0.45, "UNDERFIT", col = "red", font = 2)
+text(5, 0.45, "GOOD FIT", col = "darkgreen", font = 2)
+text(8.5, 0.45, "OVERFIT", col = "orange", font = 2)
+
+legend("topright", legend = c("Train", "Test"),
+       col = c("blue", "red"), lty = c(1, 2), lwd = 2)
+```
+
+## 1.7 Bias-Variance Tradeoff
+
+```{r bias-variance}
+x <- seq(0, 10, 0.1)
+bias <- 10 * exp(-x/2)
+variance <- x^1.5 / 3
+total <- bias + variance + 1
+
+plot(x, bias, type = "l", col = "blue", lwd = 3,
+     ylim = c(0, max(total) + 1),
+     xlab = "Model Complexity", ylab = "Error",
+     main = "Bias-Variance Tradeoff")
+
+lines(x, variance, col = "red", lwd = 3)
+lines(x, total, col = "purple", lwd = 3, lty = 2)
+
+opt_idx <- which.min(total)
+points(x[opt_idx], total[opt_idx], pch = 19, cex = 2, col = "green")
+
+legend("top", 
+       legend = c("Bias^2", "Variance", "Total", "Optimal"),
+       col = c("blue", "red", "purple", "green"),
+       lty = c(1, 1, 2, NA), pch = c(NA, NA, NA, 19), lwd = 3)
+```
+
+## 1.8 Model Comparison
+
+```{r models}
+models <- c("Linear", "Tree", "Random\nForest", "SVM", "Neural\nNet")
+accuracy <- c(0.75, 0.82, 0.90, 0.88, 0.92)
+
+barplot(accuracy, names.arg = models, col = rainbow(5),
+        ylim = c(0, 1), ylab = "Accuracy",
+        main = "Model Comparison", las = 2)
+
+abline(h = 0.8, col = "red", lty = 2, lwd = 2)
+
+text(1:5, accuracy + 0.03, 
+     paste0(round(accuracy * 100, 1), "%"), 
+     cex = 1.1, font = 2)
+```
+
+## Tóm tắt
+
+### Các loại ML
+
+| Loại | Bài toán | Ví dụ |
+|------|----------|-------|
+| Supervised - Regression | Dự đoán số | Giá nhà |
+| Supervised - Classification | Dự đoán nhãn | Spam |
+| Unsupervised - Clustering | Phân nhóm | Khách hàng |
+
+### Quy trình 10 bước
+
+1. Problem Understanding
+2. Data Understanding
+3. Feature Understanding
+4. Feature Engineering
+5. Dataset Partition
+6. Data Modelling
+7. Data Evaluation
+8. Hyper-parameter Tuning
+9. Build Pipeline
+10. Conclusion
+
+### Lưu ý
+
+- Luôn chia train/test
+- Kiểm tra overfitting
+- Dùng cross-validation
+- Chọn metric phù hợp
+
+---
+
+**Cập nhật**: Tháng 3/2026
