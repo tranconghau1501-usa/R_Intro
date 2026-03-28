@@ -347,3 +347,4 @@ p_cls <- ggplot(df_cls, aes(x = chu_so, y = accuracy, fill = accuracy)) +
 print(p_cls)
 
 cat("\nHoan tat! 4 bieu do: Loss | Accuracy | Confusion Matrix | Per-class Acc\n")
+
